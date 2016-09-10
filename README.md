@@ -1,5 +1,5 @@
 
-# ${1:Project Name}
+# chan-download
 ## Installation
 1. Download from Releases page
 2. Run
