@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -31,6 +33,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.MatteBorder;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class mainui {
 
@@ -46,6 +54,11 @@ public class mainui {
 	protected static JScrollPane progressTextPane;
 	protected static JTextArea progressText;
 	private static int ftype = 0;
+	private JLabel lblFilenameScheme;
+	protected static JTextField scheme;
+	private JPanel advancedPanel;
+	private JLabel lblAdvancedSettings;
+	private static int advancedSettings = 0;
 	/**
 	 * Launch the application.
 	 */
@@ -77,39 +90,76 @@ public class mainui {
 	 */
 	private void initialize() {
 		frmchanThreadDownloader = new JFrame();
+		frmchanThreadDownloader.setMinimumSize(new Dimension(500, 350));
 		frmchanThreadDownloader.setTitle("4chan thread downloader");
 		frmchanThreadDownloader.getContentPane().setBackground(Color.DARK_GRAY);
-		frmchanThreadDownloader.getContentPane().setLayout(new MigLayout("", "[440px,grow]", "[][][][][][20.00][grow]"));
+		frmchanThreadDownloader.getContentPane().setLayout(new MigLayout("hidemode 1", "[440px,grow]", "[][][][50px:50px][19.00][grow,fill]"));
 		
 		JLabel lblThreadUrl = new JLabel("Thread URL");
 		lblThreadUrl.setVerticalAlignment(SwingConstants.TOP);
 		lblThreadUrl.setFont(new Font("Cantarell", Font.PLAIN, 14));
 		lblThreadUrl.setForeground(Color.WHITE);
-		frmchanThreadDownloader.getContentPane().add(lblThreadUrl, "cell 0 0");
-		
-		threadURL = new JTextField();
-		lblThreadUrl.setLabelFor(threadURL);
-		threadURL.setBorder(new LineBorder(new Color(128, 128, 128)));
-		threadURL.setForeground(Color.DARK_GRAY);
-		threadURL.setFont(new Font("Cantarell", Font.PLAIN, 14));
-		frmchanThreadDownloader.getContentPane().add(threadURL, "cell 0 1,growx");
-		threadURL.setColumns(10);
+		frmchanThreadDownloader.getContentPane().add(lblThreadUrl, "flowy,cell 0 0");
 		
 		lblTargetDirectory = new JLabel("Target Directory");
 		lblTargetDirectory.setFont(new Font("Cantarell", Font.PLAIN, 14));
 		lblTargetDirectory.setForeground(Color.WHITE);
-		frmchanThreadDownloader.getContentPane().add(lblTargetDirectory, "cell 0 2");
+		frmchanThreadDownloader.getContentPane().add(lblTargetDirectory, "flowy,cell 0 1");
 		
-		targetDirectory = new JTextField();
-		targetDirectory.setBorder(new LineBorder(Color.GRAY));
-		frmchanThreadDownloader.getContentPane().add(targetDirectory, "flowx,cell 0 3,growx");
-		targetDirectory.setColumns(10);
+		lblAdvancedSettings = new JLabel("Advanced Settings");
+		lblAdvancedSettings.setVerticalTextPosition(SwingConstants.TOP);
+		lblAdvancedSettings.setVerticalAlignment(SwingConstants.TOP);
+		lblAdvancedSettings.setIconTextGap(0);
+		ImageIcon ii0 = new ImageIcon("/home/laurent/eclipse/workspace/chan-download/src/images/ic_chevron_right_white_48dp_1x.png");
+		ImageIcon ii1 = new ImageIcon("/home/laurent/eclipse/workspace/chan-download/src/images/ic_expand_more_white_48dp_1x.png");
+		Image ii0i = ii0.getImage();
+		Image ii1i = ii1.getImage();
+		Image ii0n = ii0i.getScaledInstance(16, 16,  java.awt.Image.SCALE_SMOOTH); //scaling
+		Image ii1n = ii1i.getScaledInstance(16, 16,  java.awt.Image.SCALE_SMOOTH); //scaling
+		lblAdvancedSettings.setIcon(new ImageIcon(ii0n));
+		lblAdvancedSettings.setFont(new Font("Cantarell", Font.PLAIN, 14));
+		lblAdvancedSettings.setForeground(Color.WHITE);
+		frmchanThreadDownloader.getContentPane().add(lblAdvancedSettings, "flowx,cell 0 2,growx,aligny top");
+		
+		advancedPanel = new JPanel();
+		advancedPanel.setVisible(false);
+		advancedPanel.setMinimumSize(new Dimension(0, 0));
+		advancedPanel.setPreferredSize(new Dimension(0, 0));
+		lblAdvancedSettings.setLabelFor(advancedPanel);
+		advancedPanel.setName("");
+		advancedPanel.setForeground(Color.WHITE);
+		advancedPanel.setFont(new Font("Cantarell", Font.PLAIN, 14));
+		advancedPanel.setBorder(new MatteBorder(0, 2, 0, 0, new Color(3, 169, 244)));
+		advancedPanel.setBackground(Color.DARK_GRAY);
+		frmchanThreadDownloader.getContentPane().add(advancedPanel, "hidemode 1,cell 0 3,grow");
+		advancedPanel.setLayout(new MigLayout("", "[436px]", "[15px]"));
+		
+		lblFilenameScheme = new JLabel("Filename Scheme (Leave empty for default)");
+		lblFilenameScheme.setHorizontalAlignment(SwingConstants.LEFT);
+		lblFilenameScheme.setHorizontalTextPosition(SwingConstants.LEFT);
+		advancedPanel.add(lblFilenameScheme, "flowy,cell 0 0,growx,aligny top");
+		lblFilenameScheme.setFont(new Font("Cantarell", Font.PLAIN, 14));
+		lblFilenameScheme.setForeground(Color.WHITE);
+		
+		scheme = new JTextField();
+		advancedPanel.add(scheme, "cell 0 0,grow");
+		scheme.setBorder(new LineBorder(Color.GRAY));
+		scheme.setColumns(10);
 		
 		btnDownloadThread = new JButton("Download Thread");
 		btnDownloadThread.setBackground(Color.DARK_GRAY);
 		btnDownloadThread.setBorder(new EmptyBorder(5, 8, 5, 8));
 		btnDownloadThread.setForeground(new Color(3, 169, 244));
-		frmchanThreadDownloader.getContentPane().add(btnDownloadThread, "cell 0 4");
+		frmchanThreadDownloader.getContentPane().add(btnDownloadThread, "flowy,hidemode 3,cell 0 4");
+		
+		progressTextPane = new JScrollPane();
+		progressTextPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		frmchanThreadDownloader.getContentPane().add(progressTextPane, "flowy,cell 0 5,grow");
+		
+		progressText = new JTextArea();
+		progressText.setBorder(new MatteBorder(1, 1, 1, 1, new Color(3, 169, 244)));
+		progressText.setEditable(false);
+		progressTextPane.setViewportView(progressText);
 		
 		progressBar = new JProgressBar();
 		progressBar.setUI(new BasicProgressBarUI() {
@@ -122,9 +172,17 @@ public class mainui {
 		progressBar.setForeground(new Color(139,195,74));
 		progressBar.setBackground(Color.WHITE);
 		progressBar.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		frmchanThreadDownloader.getContentPane().add(progressBar, "cell 0 5,growx,aligny bottom");
+		frmchanThreadDownloader.getContentPane().add(progressBar, "cell 0 4,growx,aligny bottom");
+		
+		targetDirectory = new JTextField();
+		targetDirectory.setHorizontalAlignment(SwingConstants.LEFT);
+		targetDirectory.setBorder(new LineBorder(Color.GRAY));
+		frmchanThreadDownloader.getContentPane().add(targetDirectory, "cell 0 1,growx");
+		targetDirectory.setColumns(10);
 		
 		btnChoose = new JButton("Choose...");
+		btnChoose.setHorizontalTextPosition(SwingConstants.LEADING);
+		btnChoose.setHorizontalAlignment(SwingConstants.RIGHT);
 		btnChoose.setFocusPainted(false);
 		btnChoose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnChoose.setForeground(new Color(0, 128, 128));
@@ -134,20 +192,15 @@ public class mainui {
 		btnChoose.setFont(new Font("DejaVu Sans Condensed", Font.BOLD, 13));
 		btnChoose.setMnemonic('c');
 		btnChoose.setMnemonic(KeyEvent.VK_C);
-		frmchanThreadDownloader.getContentPane().add(btnChoose, "cell 0 3");
+		frmchanThreadDownloader.getContentPane().add(btnChoose, "cell 0 1");
 		
-		progressTextPane = new JScrollPane();
-		progressTextPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		frmchanThreadDownloader.getContentPane().add(progressTextPane, "cell 0 6,grow");
-		
-		progressText = new JTextArea();
-		progressText.setBorder(null);
-		progressText.setEditable(false);
-		progressTextPane.setViewportView(progressText);
-		
-		frmchanThreadDownloader.setBackground(Color.DARK_GRAY);
-		frmchanThreadDownloader.setBounds(100, 100, 500, 300);
-		frmchanThreadDownloader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		threadURL = new JTextField();
+		lblThreadUrl.setLabelFor(threadURL);
+		threadURL.setBorder(new LineBorder(new Color(128, 128, 128)));
+		threadURL.setForeground(Color.DARK_GRAY);
+		threadURL.setFont(new Font("Cantarell", Font.PLAIN, 14));
+		frmchanThreadDownloader.getContentPane().add(threadURL, "cell 0 0,growx");
+		threadURL.setColumns(10);
 		
 		btnChoose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -182,8 +235,8 @@ public class mainui {
 					{
 					    public void run() {
 					    	try {
-					    		target = ftype == 0 ? Paths.get(targetDirectory.getText()).toRealPath()
-					    							: chooser.getSelectedFile().toPath().toRealPath();
+					    		target = ftype == 0 ? Paths.get(targetDirectory.getText())
+					    							: chooser.getSelectedFile().toPath();
 					    		Download.download_thread(threadURL.getText(), target);
 					    	} catch (Exception ex) {
 								JOptionPane.showMessageDialog(frmchanThreadDownloader,
@@ -200,5 +253,26 @@ public class mainui {
 				}
 			}
 		});
+		
+		lblAdvancedSettings.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(advancedSettings == 0) {
+					advancedPanel.setVisible(true);
+					frmchanThreadDownloader.getContentPane().revalidate();
+					lblAdvancedSettings.setIcon(new ImageIcon(ii1n));
+				} else {
+					advancedPanel.setVisible(false);
+					frmchanThreadDownloader.getContentPane().revalidate();
+					lblAdvancedSettings.setIcon(new ImageIcon(ii0n));
+				}
+				advancedSettings = (advancedSettings == 0) ? 1 : 0;
+			}
+		});
+		
+		frmchanThreadDownloader.setBackground(Color.DARK_GRAY);
+		//frmchanThreadDownloader.setBounds(0, 0, 450, 350);
+		frmchanThreadDownloader.pack();
+		frmchanThreadDownloader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

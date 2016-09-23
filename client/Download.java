@@ -6,6 +6,9 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
@@ -16,12 +19,18 @@ import org.jsoup.select.*;
 
 public class Download {
 	
+	private static String sep = System.getProperty("file.separator");
+	
 	public static int download_thread (String url, Path target) throws Exception {
 		mainui.progressText.setText("");
 		
+		String scheme = null;
 		int success = 0;
 		String[] image = new String[512];
 		String[] filename = new String[512];
+		
+		if(!mainui.scheme.getText().isEmpty())
+			scheme = mainui.scheme.getText();
 		
 		Document thread = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
 											.referrer("http://boards.4chan.org").get();
@@ -31,9 +40,26 @@ public class Download {
         
         for(int i = 0; i < images.size(); i++) {
         	image[i] = "http:" + images.get(i).attr("src").replace("s", "");
-        	filename[i] = FilenameUtils.getBaseName(image[i])
-					+ "."
-					+ FilenameUtils.getExtension(image[i]);
+        	if(scheme != null) {
+        		Calendar c = Calendar.getInstance();
+        		Pattern threadNoP = Pattern.compile("[0-9]{5,}");
+        		Matcher threadNo = threadNoP.matcher(url);
+        		threadNo.find();
+        		filename[i] = scheme
+        					.replaceAll("%o%", FilenameUtils.getBaseName(image[i]))
+        					.replaceAll("%e%", FilenameUtils.getExtension(image[i]))
+        					.replaceAll("%s%", String.valueOf(Calendar.SECOND))
+        					.replaceAll("%m%", String.valueOf(Calendar.MINUTE))
+        					.replaceAll("%h%", String.valueOf(Calendar.HOUR))
+        					.replaceAll("%fd%", String.valueOf(c.getTime()))
+        					.replaceAll("%t%", title)
+        					.replaceAll("%no%", threadNo.group(0));
+        	} else {
+        		filename[i] = FilenameUtils.getBaseName(image[i])
+    					+ "."
+    					+ FilenameUtils.getExtension(image[i]);
+        	}
+        	
         	URL website = new URL(image[i]);
         	
         	try {
@@ -48,7 +74,7 @@ public class Download {
         		} else {
             		
 		        	ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-		        	FileOutputStream fos = new FileOutputStream(target + filename[i]);
+		        	FileOutputStream fos = new FileOutputStream(target + sep + filename[i]);
 		        	fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		        	fos.close();
 		        	mainui.progressBar.setMaximum(images.size());
@@ -58,7 +84,8 @@ public class Download {
 		        	mainui.progressText.setText(mainui.progressText.getText()
 		        								+ "[" + (i+1) + "/" + images.size() + "]"
 		        								+ Math.round(((double)(i+1) / images.size())*100)
-		        								+ "% / Downloading " + image[i] + "\r\n");
+		        								+ "% / Downloading " + image[i]
+		        								+ ((scheme == null) ? "" : " as " + filename[i]) + "\r\n");
 		        	mainui.frmchanThreadDownloader.revalidate();
 		        	mainui.frmchanThreadDownloader.repaint();
 	        		success++;
