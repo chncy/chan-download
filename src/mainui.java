@@ -1,4 +1,4 @@
-package client;
+package src;
 
 import java.awt.EventQueue;
 
@@ -110,8 +110,8 @@ public class mainui {
 		lblAdvancedSettings.setVerticalTextPosition(SwingConstants.TOP);
 		lblAdvancedSettings.setVerticalAlignment(SwingConstants.TOP);
 		lblAdvancedSettings.setIconTextGap(0);
-		ImageIcon ii0 = new ImageIcon("/home/laurent/eclipse/workspace/chan-download/src/images/ic_chevron_right_white_48dp_1x.png");
-		ImageIcon ii1 = new ImageIcon("/home/laurent/eclipse/workspace/chan-download/src/images/ic_expand_more_white_48dp_1x.png");
+		ImageIcon ii0 = new ImageIcon(src.mainui.class.getResource("/src/images/ic_expand_less_white_18dp_1x.png"));
+		ImageIcon ii1 = new ImageIcon(src.mainui.class.getResource("/src/images/ic_expand_more_white_18dp_1x.png"));
 		Image ii0i = ii0.getImage();
 		Image ii1i = ii1.getImage();
 		Image ii0n = ii0i.getScaledInstance(16, 16,  java.awt.Image.SCALE_SMOOTH); //scaling

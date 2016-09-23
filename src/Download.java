@@ -1,4 +1,4 @@
-package client;
+package src;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,7 +53,8 @@ public class Download {
         					.replaceAll("%h%", String.valueOf(Calendar.HOUR))
         					.replaceAll("%fd%", String.valueOf(c.getTime()))
         					.replaceAll("%t%", title)
-        					.replaceAll("%no%", threadNo.group(0));
+        					.replaceAll("%no%", threadNo.group(0))
+        					.replaceAll("%i%", String.valueOf(i));
         	} else {
         		filename[i] = FilenameUtils.getBaseName(image[i])
     					+ "."
