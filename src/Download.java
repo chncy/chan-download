@@ -9,9 +9,7 @@ import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.JOptionPane;
-
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
