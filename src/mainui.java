@@ -1,7 +1,6 @@
 package src;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -204,8 +203,6 @@ public class mainui {
 						ioe.printStackTrace();
 					}
 			        targetDirectory.setText(target.toString());
-			    } else {
-			    	System.out.println("No file was selected.");
 			    }
 			}
 		});
