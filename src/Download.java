@@ -34,79 +34,79 @@ public class Download {
 											.referrer("http://boards.4chan.org").get();
 		String title = thread.title();
 		
-	Elements images = thread.getElementsByTag("img");
-	
-	for(int i = 0; i < images.size(); i++) {
-		image[i] = "http:" + images.get(i).attr("src").replace("s", "");
-		if(scheme != null) {
-			Calendar c = Calendar.getInstance();
-			Pattern threadNoP = Pattern.compile("[0-9]{5,}");
-			Matcher threadNo = threadNoP.matcher(url);
-			threadNo.find();
-			filename[i] = scheme
-						.replaceAll("%o%", FilenameUtils.getBaseName(image[i]))
-						.replaceAll("%e%", FilenameUtils.getExtension(image[i]))
-						.replaceAll("%s%", String.valueOf(Calendar.SECOND))
-						.replaceAll("%m%", String.valueOf(Calendar.MINUTE))
-						.replaceAll("%h%", String.valueOf(Calendar.HOUR))
-						.replaceAll("%fd%", String.valueOf(c.getTime()))
-						.replaceAll("%t%", title)
-						.replaceAll("%no%", threadNo.group(0))
-						.replaceAll("%i%", String.valueOf(i));
-		} else {
-			filename[i] = FilenameUtils.getBaseName(image[i])
-    					+ "."
-    					+ FilenameUtils.getExtension(image[i]);
-		}
+		Elements images = thread.getElementsByTag("img");
 		
-		URL website = new URL(image[i]);
-		
-		try {
-			File exists = new File(target + filename[i]);
-			if(exists.exists()) {
-	    		
-	    		mainui.progressText.setText(mainui.progressText.getText()
-    						+ "[" + (i+1) + "/" + images.size() + "]"
-    						+ Math.round(((double)(i+1) / images.size())*100)
-    						+ "% / Image " + filename[i] + " already exists. Skipping!\r\n");
-	    		continue;
+		for(int i = 0; i < images.size(); i++) {
+			image[i] = "http:" + images.get(i).attr("src").replace("s", "");
+			if(scheme != null) {
+				Calendar c = Calendar.getInstance();
+				Pattern threadNoP = Pattern.compile("[0-9]{5,}");
+				Matcher threadNo = threadNoP.matcher(url);
+				threadNo.find();
+				filename[i] = scheme
+							.replaceAll("%o%", FilenameUtils.getBaseName(image[i]))
+							.replaceAll("%e%", FilenameUtils.getExtension(image[i]))
+							.replaceAll("%s%", String.valueOf(Calendar.SECOND))
+							.replaceAll("%m%", String.valueOf(Calendar.MINUTE))
+							.replaceAll("%h%", String.valueOf(Calendar.HOUR))
+							.replaceAll("%fd%", String.valueOf(c.getTime()))
+							.replaceAll("%t%", title)
+							.replaceAll("%no%", threadNo.group(0))
+							.replaceAll("%i%", String.valueOf(i));
 			} else {
-	    		
-				ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-				FileOutputStream fos = new FileOutputStream(target + sep + filename[i]);
-				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-				fos.close();
-				mainui.progressBar.setMaximum(images.size());
-				mainui.progressBar.setValue(i);
-				mainui.progressBar.setString((i+1) + "/" + images.size()
-											+ "(" + Math.round(((double)(i+1) / images.size())*100) + "%)");
-				mainui.progressText.setText(mainui.progressText.getText()
-											+ "[" + (i+1) + "/" + images.size() + "]"
-											+ Math.round(((double)(i+1) / images.size())*100)
-											+ "% / Downloading " + image[i]
-											+ ((scheme == null) ? "" : " as " + filename[i]) + "\r\n");
-				mainui.frmchanThreadDownloader.revalidate();
-				mainui.frmchanThreadDownloader.repaint();
-				success++;
+				filename[i] = FilenameUtils.getBaseName(image[i])
+	    					+ "."
+	    					+ FilenameUtils.getExtension(image[i]);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			mainui.progressText.setText(mainui.progressText.getText()
-						+ "[" + (i+1) + "/" + images.size() + "]"
-						+ Math.round(((double)(i+1) / images.size())*100)
-						+ "% / Error downloading " + image[i] + ":\r\n"
-						+ "\u0009Message: " + e.getCause() + "\r\n");
-			continue;
+			
+			URL website = new URL(image[i]);
+			
+			try {
+				File exists = new File(target + filename[i]);
+				if(exists.exists()) {
+		    		
+		    		mainui.progressText.setText(mainui.progressText.getText()
+	    						+ "[" + (i+1) + "/" + images.size() + "]"
+	    						+ Math.round(((double)(i+1) / images.size())*100)
+	    						+ "% / Image " + filename[i] + " already exists. Skipping!\r\n");
+		    		continue;
+				} else {
+		    		
+					ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+					FileOutputStream fos = new FileOutputStream(target + sep + filename[i]);
+					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					fos.close();
+					mainui.progressBar.setMaximum(images.size());
+					mainui.progressBar.setValue(i);
+					mainui.progressBar.setString((i+1) + "/" + images.size()
+												+ "(" + Math.round(((double)(i+1) / images.size())*100) + "%)");
+					mainui.progressText.setText(mainui.progressText.getText()
+												+ "[" + (i+1) + "/" + images.size() + "]"
+												+ Math.round(((double)(i+1) / images.size())*100)
+												+ "% / Downloading " + image[i]
+												+ ((scheme == null) ? "" : " as " + filename[i]) + "\r\n");
+					mainui.frmchanThreadDownloader.revalidate();
+					mainui.frmchanThreadDownloader.repaint();
+					success++;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				mainui.progressText.setText(mainui.progressText.getText()
+							+ "[" + (i+1) + "/" + images.size() + "]"
+							+ Math.round(((double)(i+1) / images.size())*100)
+							+ "% / Error downloading " + image[i] + ":\r\n"
+							+ "\u0009Message: " + e.getCause() + "\r\n");
+				continue;
+			}
 		}
-	}
-	if(success < 1) {
-		throw new Exception();
-		}
-	JOptionPane.showMessageDialog(mainui.frmchanThreadDownloader,
-			    "Download Successful!\n"
-			    + "Succesfully downloaded " + success + "/" + images.size()
-			    + " images from \"" + title + "\"");
-	mainui.progressBar.setValue(mainui.progressBar.getMaximum());
+		if(success < 1) {
+			throw new Exception();
+			}
+		JOptionPane.showMessageDialog(mainui.frmchanThreadDownloader,
+				    "Download Successful!\n"
+				    + "Succesfully downloaded " + success + "/" + images.size()
+				    + " images from \"" + title + "\"");
+		mainui.progressBar.setValue(mainui.progressBar.getMaximum());
 	
 		return 1;
 	}
