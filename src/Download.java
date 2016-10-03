@@ -55,8 +55,8 @@ public class Download {
 							.replaceAll("%i%", String.valueOf(i));
 			} else {
 				filename[i] = FilenameUtils.getBaseName(image[i])
-	    					+ "."
-	    					+ FilenameUtils.getExtension(image[i]);
+							+ "."
+							+ FilenameUtils.getExtension(image[i]);
 			}
 			
 			URL website = new URL(image[i]);
@@ -64,14 +64,14 @@ public class Download {
 			try {
 				File exists = new File(target + filename[i]);
 				if(exists.exists()) {
-		    		
-		    		mainui.progressText.setText(mainui.progressText.getText()
-	    						+ "[" + (i+1) + "/" + images.size() + "]"
-	    						+ Math.round(((double)(i+1) / images.size())*100)
-	    						+ "% / Image " + filename[i] + " already exists. Skipping!\r\n");
-		    		continue;
+					
+					mainui.progressText.setText(mainui.progressText.getText()
+								+ "[" + (i+1) + "/" + images.size() + "]"
+								+ Math.round(((double)(i+1) / images.size())*100)
+								+ "% / Image " + filename[i] + " already exists. Skipping!\r\n");
+					continue;
 				} else {
-		    		
+					
 					ReadableByteChannel rbc = Channels.newChannel(website.openStream());
 					FileOutputStream fos = new FileOutputStream(target + sep + filename[i]);
 					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -103,9 +103,9 @@ public class Download {
 			throw new Exception();
 			}
 		JOptionPane.showMessageDialog(mainui.frmchanThreadDownloader,
-				    "Download Successful!\n"
-				    + "Succesfully downloaded " + success + "/" + images.size()
-				    + " images from \"" + title + "\"");
+					"Download Successful!\n"
+					+ "Succesfully downloaded " + success + "/" + images.size()
+					+ " images from \"" + title + "\"");
 		mainui.progressBar.setValue(mainui.progressBar.getMaximum());
 	
 		return 1;
