@@ -146,9 +146,9 @@ public class mainui {
 		progressBar = new JProgressBar();
 		if(isNotGTK) {
 			progressBar.setUI(new BasicProgressBarUI() {
-		        protected Color getSelectionBackground() { return new Color(51, 51, 51); }
-		        protected Color getSelectionForeground() { return Color.white; }
-		    });
+				protected Color getSelectionBackground() { return new Color(51, 51, 51); }
+				protected Color getSelectionForeground() { return Color.white; }
+			});
 			progressBar.setForeground(new Color(139,195,74));
 			progressBar.setBorder(null);
 			progressBar.setForeground(new Color(139,195,74));
@@ -180,20 +180,20 @@ public class mainui {
 		btnChoose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				chooser = new JFileChooser();
-			    chooser.setCurrentDirectory(new java.io.File("."));
-			    chooser.setDialogTitle("Choose a target Directory");
-			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			    chooser.setAcceptAllFileFilterUsed(false);
-			    
-			    if (chooser.showOpenDialog(frmchanThreadDownloader) == JFileChooser.APPROVE_OPTION) { 
-			        try {
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose a target Directory");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				
+				if (chooser.showOpenDialog(frmchanThreadDownloader) == JFileChooser.APPROVE_OPTION) { 
+					try {
 						target = chooser.getSelectedFile().toPath().toRealPath();
 						ftype = 1;
 					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
-			        targetDirectory.setText(target.toString());
-			    }
+					targetDirectory.setText(target.toString());
+				}
 			}
 		});
 		
@@ -206,20 +206,20 @@ public class mainui {
 				} else {
 					Runnable runner = new Runnable()
 					{
-					    public void run() {
-					    	try {
-					    		target = ftype == 0 ? Paths.get(targetDirectory.getText())
-					    							: chooser.getSelectedFile().toPath();
-					    		Download.download_thread(threadURL.getText(), target);
-					    	} catch (Exception ex) {
+						public void run() {
+							try {
+								target = ftype == 0 ? Paths.get(targetDirectory.getText())
+													: chooser.getSelectedFile().toPath();
+								Download.download_thread(threadURL.getText(), target);
+							} catch (Exception ex) {
 								JOptionPane.showMessageDialog(frmchanThreadDownloader,
-									    "Something went wrong, check your thread URL and target directory"
+										"Something went wrong, check your thread URL and target directory"
 										+ "Stacktrace: " + ex.getMessage(),
-									    "Fatal Error!",
-									    JOptionPane.ERROR_MESSAGE);
+										"Fatal Error!",
+										JOptionPane.ERROR_MESSAGE);
 								ex.printStackTrace();
 							}
-					    }
+						}
 					};
 					Thread t = new Thread(runner, "Code Executer");
 					t.start();
